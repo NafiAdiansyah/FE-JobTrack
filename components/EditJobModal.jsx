@@ -1,5 +1,6 @@
 // components/EditJobModal.jsx
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import api from "../utils/api";
 import JobForm from "./JobForm";
 import Swal from "sweetalert2";
@@ -7,6 +8,12 @@ import Swal from "sweetalert2";
 export default function EditJobModal({ jobId, onClose, onSaved }) {
     const [job, setJob] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [mounted, setMounted] = useState(false);
+
+    // Wait until client is mounted before using portal (SSR-safe)
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     useEffect(() => {
         if (jobId) {
@@ -70,14 +77,19 @@ export default function EditJobModal({ jobId, onClose, onSaved }) {
         };
     }, []);
 
-    return (
+    // Don't render on server
+    if (!mounted) return null;
+
+    const modalContent = (
         <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
+            className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-sm p-0 sm:p-4"
             onClick={handleBackdropClick}
         >
-            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg relative animate-in">
+            <div className="bg-white rounded-t-2xl sm:rounded-2xl shadow-2xl w-full sm:max-w-lg relative animate-in max-h-[90vh] flex flex-col">
                 {/* Header */}
-                <div className="flex items-center justify-between px-6 pt-5 pb-3 border-b border-gray-100">
+                <div className="flex items-center justify-between px-5 pt-5 pb-3 border-b border-gray-100 flex-shrink-0">
+                    {/* Mobile drag handle */}
+                    <div className="absolute top-2 left-1/2 -translate-x-1/2 w-10 h-1 bg-gray-200 rounded-full sm:hidden" />
                     <h2 className="text-xl font-bold text-gray-800">Edit Job</h2>
                     <button
                         onClick={onClose}
@@ -88,7 +100,7 @@ export default function EditJobModal({ jobId, onClose, onSaved }) {
                 </div>
 
                 {/* Body */}
-                <div className="px-6 py-5">
+                <div className="px-5 py-5 overflow-y-auto">
                     {loading ? (
                         <div className="flex justify-center items-center py-12">
                             <div className="w-8 h-8 border-4 border-emerald-200 border-t-emerald-600 rounded-full animate-spin"></div>
@@ -110,7 +122,7 @@ export default function EditJobModal({ jobId, onClose, onSaved }) {
         @keyframes modalIn {
           from {
             opacity: 0;
-            transform: scale(0.95) translateY(10px);
+            transform: scale(0.97) translateY(12px);
           }
           to {
             opacity: 1;
@@ -120,4 +132,7 @@ export default function EditJobModal({ jobId, onClose, onSaved }) {
       `}</style>
         </div>
     );
+
+    // Render via portal directly into <body> — escapes all stacking contexts
+    return createPortal(modalContent, document.body);
 }

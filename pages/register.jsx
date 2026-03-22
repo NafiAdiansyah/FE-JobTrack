@@ -21,16 +21,10 @@ export default function Register() {
       const { token, user } = res.data;
       console.log("Token from server:", token, typeof token);
 
-
       if (token) {
-        // Simpan ke localStorage
         localStorage.setItem("token", token);
         localStorage.setItem("user", JSON.stringify(user));
-
-        // Update global AuthContext
-        setAuth( token, user );
-
-        // Setelah register langsung masuk dashboard
+        setAuth(token, user);
         router.push("/dashboard");
       } else {
         setError("Registration failed: no token received");
@@ -42,9 +36,12 @@ export default function Register() {
     }
   };
 
+  const inputClass =
+    "w-full px-3 py-2.5 border rounded-lg mb-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm sm:text-base bg-white/70";
+
   return (
-    <div className="relative flex justify-center items-center min-h-screen bg-emerald-50 overflow-hidden">
-      {/* Background lingkaran + blur */}
+    <div className="relative flex justify-center items-center min-h-screen bg-emerald-50 overflow-hidden px-4 py-8">
+      {/* Background blobs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute w-72 h-72 bg-emerald-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse -top-10 -left-10" />
         <div className="absolute w-96 h-96 bg-sky-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse top-20 right-0" />
@@ -54,20 +51,21 @@ export default function Register() {
       {/* Form */}
       <form
         onSubmit={handleSubmit}
-        className="relative bg-emerald-100 text-gray-600 p-6 rounded-xl shadow-lg w-full max-w-md z-10 backdrop-blur-sm"
+        className="relative bg-emerald-100 text-gray-600 p-6 sm:p-8 rounded-2xl shadow-lg w-full max-w-sm sm:max-w-md z-10 backdrop-blur-sm"
       >
-        <h1 className="text-4xl font-bold mb-4 text-center">Welcome</h1>
-        <h2 className="text-xl font-bold mb-4 text-center">
-          Register to your account to continue
+        <h1 className="text-3xl sm:text-4xl font-bold mb-2 text-center text-gray-800">Welcome</h1>
+        <h2 className="text-base sm:text-lg font-medium mb-5 text-center text-gray-500">
+          Create your account to get started
         </h2>
-        {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
+
+        {error && <p className="text-red-500 text-sm mb-3 text-center">{error}</p>}
 
         <input
           type="text"
           name="name"
           placeholder="Name"
           onChange={handleChange}
-          className="w-full p-2 border mb-2 rounded focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+          className={inputClass}
           required
         />
         <input
@@ -75,7 +73,7 @@ export default function Register() {
           name="email"
           placeholder="Email"
           onChange={handleChange}
-          className="w-full p-2 border mb-2 rounded focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+          className={inputClass}
           required
         />
         <input
@@ -83,19 +81,17 @@ export default function Register() {
           name="password"
           placeholder="Password"
           onChange={handleChange}
-          className="w-full p-2 border mb-4 rounded focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+          className={inputClass}
           required
         />
 
-        <div className="flex justify-center">
-          <button className="px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700">
-            Register
-          </button>
-        </div>
+        <button className="w-full mt-1 px-4 py-2.5 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 font-semibold transition-colors">
+          Register
+        </button>
 
-        <p className="mt-4 text-center">
+        <p className="mt-5 text-center text-sm">
           Already have an account?{" "}
-          <Link href="/login" className="hover:text-blue-600">
+          <Link href="/login" className="text-emerald-600 font-semibold hover:underline">
             Login
           </Link>
         </p>

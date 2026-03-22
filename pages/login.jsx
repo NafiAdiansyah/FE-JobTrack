@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import api from "../utils/api";
 import { FcGoogle } from "react-icons/fc";
 import { useAuth } from "../src/AuthContext";
-import Link from "next/link"; // pastikan path sesuai struktur project
+import Link from "next/link";
 
 export default function Login() {
   const router = useRouter();
@@ -12,11 +12,9 @@ export default function Login() {
   const [error, setError] = useState("");
   const { setAuth } = useAuth();
 
-  // handleChange untuk input
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
-  // handleSubmit untuk login email+password
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -25,7 +23,7 @@ export default function Login() {
       const { token, user } = res.data;
 
       if (token) {
-        setAuth(token, user); // simpan via AuthContext
+        setAuth(token, user);
         router.push("/dashboard");
       } else {
         setError("Login failed: no token received");
@@ -37,7 +35,6 @@ export default function Login() {
     }
   };
 
-  // handleGoogleLogin untuk login via Firebase Google
   const handleGoogleLogin = async () => {
     setError("");
     try {
@@ -46,12 +43,11 @@ export default function Login() {
       const result = await signInWithPopup(auth, provider);
       const idToken = await result.user.getIdToken();
 
-      // Kirim idToken ke backend -> tukar ke JWT custom
       const res = await api.post("/api/auth/google", { idToken });
       const { token, user } = res.data;
 
       if (token) {
-        setAuth(token, user); // simpan via AuthContext
+        setAuth(token, user);
         router.push("/dashboard");
       } else {
         setError("Login failed: no token received");
@@ -62,9 +58,12 @@ export default function Login() {
     }
   };
 
+  const inputClass =
+    "w-full px-3 py-2.5 border rounded-lg mb-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm sm:text-base bg-white/70";
+
   return (
-    <div className="relative flex justify-center items-center min-h-screen bg-emerald-50 overflow-hidden">
-      {/* Background lingkaran + blur */}
+    <div className="relative flex justify-center items-center min-h-screen bg-emerald-50 overflow-hidden px-4 py-8">
+      {/* Background blobs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute w-72 h-72 bg-emerald-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse -top-10 -left-10" />
         <div className="absolute w-96 h-96 bg-sky-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse top-20 right-0" />
@@ -74,19 +73,21 @@ export default function Login() {
       {/* Form */}
       <form
         onSubmit={handleSubmit}
-        className="relative bg-emerald-100 text-gray-600 p-6 rounded-xl shadow-lg w-full max-w-md z-10 backdrop-blur-sm"
+        className="relative bg-emerald-100 text-gray-600 p-6 sm:p-8 rounded-2xl shadow-lg w-full max-w-sm sm:max-w-md z-10 backdrop-blur-sm"
       >
-        <h1 className="text-4xl font-bold mb-4 text-center">Welcome</h1>
-        <h2 className="text-xl font-bold mb-4 text-center">
+        <h1 className="text-3xl sm:text-4xl font-bold mb-2 text-center text-gray-800">Welcome</h1>
+        <h2 className="text-base sm:text-lg font-medium mb-5 text-center text-gray-500">
           Login to your account to continue
         </h2>
-        {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
+
+        {error && <p className="text-red-500 text-sm mb-3 text-center">{error}</p>}
+
         <input
           type="email"
           name="email"
           placeholder="Email"
           onChange={handleChange}
-          className="w-full p-2 border mb-2 rounded focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+          className={inputClass}
           required
         />
         <input
@@ -94,32 +95,30 @@ export default function Login() {
           name="password"
           placeholder="Password"
           onChange={handleChange}
-          className="w-full p-2 border mb-2 rounded focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+          className={inputClass}
           required
         />
 
-        <div className="flex justify-center">
-          <button className="px-4 py-2 align-center bg-emerald-600 text-white rounded hover:bg-emerald-700">
-            Login
-          </button>
-        </div>
+        <button className="w-full mt-1 px-4 py-2.5 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 font-semibold transition-colors">
+          Login
+        </button>
 
-        <p className="text-center text-sm mt-4">or login with</p>
+        <p className="text-center text-sm mt-5 text-gray-500">or login with</p>
 
-        {/* Tombol login Google */}
-        <div className="flex justify-center">
+        <div className="flex justify-center mt-3">
           <button
             type="button"
             onClick={handleGoogleLogin}
-            className="flex items-center justify-center p-2 border-2 mt-4 border-emerald-600 rounded hover:bg-emerald-700"
+            className="flex items-center justify-center gap-2 px-5 py-2.5 border-2 border-emerald-600 rounded-lg hover:bg-emerald-100 transition-colors text-sm font-medium text-gray-700"
           >
-            <FcGoogle className="text-3xl" />
+            <FcGoogle className="text-2xl" />
+            Google
           </button>
         </div>
 
-        <p className="mt-4 text-center">
-          Don't have an account?{" "}
-          <Link href="/register" className="hover:text-blue-600">
+        <p className="mt-5 text-center text-sm">
+          Don&apos;t have an account?{" "}
+          <Link href="/register" className="text-emerald-600 font-semibold hover:underline">
             Register
           </Link>
         </p>

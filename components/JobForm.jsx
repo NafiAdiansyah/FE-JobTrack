@@ -7,7 +7,7 @@ export default function JobForm({ initialValues = null, initialData = null, onSu
     company: "",
     status: "applied",
     notes: "",
-    appliedDate: "", // ✅ tambahkan default kosong
+    appliedDate: "",
   };
 
   const [form, setForm] = useState(initial);
@@ -21,7 +21,7 @@ export default function JobForm({ initialValues = null, initialData = null, onSu
         status: data.status || "applied",
         notes: data.notes || "",
         appliedDate: data.appliedDate
-          ? new Date(data.appliedDate).toISOString().split("T")[0] // format YYYY-MM-DD
+          ? new Date(data.appliedDate).toISOString().split("T")[0]
           : "",
       });
     }
@@ -37,18 +37,18 @@ export default function JobForm({ initialValues = null, initialData = null, onSu
     onSubmit(form);
   };
 
+  const inputClass =
+    "w-full px-3 py-2.5 border border-emerald-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm sm:text-base bg-white text-gray-900";
+
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="bg-white p-6 rounded shadow-md w-full text-gray-900"
-    >
+    <form onSubmit={handleSubmit} className="w-full text-gray-900 space-y-0">
       <input
         type="text"
         name="jobTitle"
         placeholder="Job Title"
         value={form.jobTitle}
         onChange={handleChange}
-        className="w-full p-2 border mb-4 rounded focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent border-emerald-300"
+        className={inputClass}
         required
       />
       <input
@@ -57,14 +57,14 @@ export default function JobForm({ initialValues = null, initialData = null, onSu
         placeholder="Company"
         value={form.company}
         onChange={handleChange}
-        className="w-full p-2 border mb-4 rounded focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent border-emerald-300"
+        className={inputClass}
         required
       />
       <select
         name="status"
         value={form.status}
         onChange={handleChange}
-        className="w-full p-2 border mb-4 rounded border-emerald-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+        className={inputClass}
       >
         <option value="applied">Applied</option>
         <option value="interview">Interview</option>
@@ -73,28 +73,27 @@ export default function JobForm({ initialValues = null, initialData = null, onSu
         <option value="hired">Hired</option>
       </select>
 
-      {/* ✅ Field Applied Date */}
       <input
         type="date"
         name="appliedDate"
         value={form.appliedDate}
         onChange={handleChange}
-        className="w-full p-2 border mb-4 rounded border-emerald-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+        className={inputClass}
       />
 
-      {/* Notes */}
       <textarea
         name="notes"
         placeholder="Notes (optional)"
         value={form.notes}
         onChange={handleChange}
-        className="w-full p-2 border rounded border-emerald-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+        rows={3}
+        className="w-full px-3 py-2.5 border border-emerald-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm sm:text-base bg-white text-gray-900 resize-none"
       />
 
-      <div className="flex justify-center">
+      <div className="flex justify-center pt-1">
         <button
-          className="px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700"
           type="submit"
+          className="w-full sm:w-auto px-8 py-2.5 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 font-semibold transition-colors"
         >
           Save
         </button>

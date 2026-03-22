@@ -45,46 +45,55 @@ export default function JobList({ jobs, refreshJobs }) {
     <>
       <div className="space-y-4">
         {jobs.map((job) => (
-          <div key={job._id} className="bg-white p-4 rounded-xl shadow flex justify-between items-center">
-            <div>
-              <h2 className="font-bold text-lg text-gray-600">{job.jobTitle}</h2>
-              <p className="text-gray-600">{job.company}</p>
-              <p className="text-gray-600">
-                Applied Date:{" "}
+          <div
+            key={job._id}
+            className="bg-white p-4 rounded-xl shadow flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4"
+          >
+            {/* Job Info */}
+            <div className="flex-1 min-w-0">
+              <h2 className="font-bold text-lg text-gray-700 truncate">{job.jobTitle}</h2>
+              <p className="text-gray-600 text-sm">{job.company}</p>
+              <p className="text-gray-500 text-sm">
+                Applied:{" "}
                 {job.appliedDate
                   ? new Date(job.appliedDate).toLocaleDateString()
                   : "Not set"}
               </p>
-
-              {/* tampilkan notes */}
-              {job.notes && <p className="italic text-gray-600">Notes: {job.notes}</p>}
+              {job.notes && (
+                <p className="italic text-gray-500 text-sm mt-1 truncate">
+                  Notes: {job.notes}
+                </p>
+              )}
               <span
-                className={`inline-block text-xs font-medium px-3 py-1 rounded-full ${job.status === "applied"
-                  ? "bg-yellow-100 text-yellow-700"
-                  : job.status === "interview"
+                className={`inline-block mt-2 text-xs font-medium px-3 py-1 rounded-full ${
+                  job.status === "applied"
+                    ? "bg-yellow-100 text-yellow-700"
+                    : job.status === "interview"
                     ? "bg-blue-100 text-blue-700"
                     : job.status === "offer"
-                      ? "bg-green-100 text-green-700"
-                      : job.status === "rejected"
-                        ? "bg-red-100 text-red-700"
-                        : job.status === "hired"
-                          ? "bg-green-100 text-green-700"
-                          : "bg-gray-100 text-gray-700"
-                  }`}
+                    ? "bg-green-100 text-green-700"
+                    : job.status === "rejected"
+                    ? "bg-red-100 text-red-700"
+                    : job.status === "hired"
+                    ? "bg-green-100 text-green-700"
+                    : "bg-gray-100 text-gray-700"
+                }`}
               >
                 {job.status}
               </span>
             </div>
-            <div className="space-x-2 flex">
+
+            {/* Actions */}
+            <div className="flex gap-2 sm:flex-col md:flex-row flex-shrink-0">
               <button
                 onClick={() => setEditingJobId(job._id)}
-                className="bg-blue-500 text-white px-3 py-1 rounded-lg hover:bg-blue-600 transition"
+                className="flex-1 sm:flex-none bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition text-sm font-medium"
               >
                 Edit
               </button>
               <button
                 onClick={() => handleDelete(job._id)}
-                className="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 transition"
+                className="flex-1 sm:flex-none bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition text-sm font-medium"
               >
                 Delete
               </button>
@@ -92,7 +101,7 @@ export default function JobList({ jobs, refreshJobs }) {
           </div>
         ))}
         {jobs.length === 0 && (
-          <p className="text-center text-gray-500">Belum ada aplikasi pekerjaan.</p>
+          <p className="text-center text-gray-500 py-12">Belum ada aplikasi pekerjaan.</p>
         )}
       </div>
 
@@ -107,4 +116,3 @@ export default function JobList({ jobs, refreshJobs }) {
     </>
   );
 }
-
